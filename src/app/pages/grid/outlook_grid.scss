@@ -1,0 +1,47 @@
+@import "../../variables";
+
+
+//colors
+$cell-gray:#E8EBED;
+$cell-light-gray:#E5E5E5;
+$cell-light-purple:#F4F1FB;
+
+.atp-outlook-grid-lbl-BHC, .atp-outlook-grid-lbl-AHC, .atp-outlook-grid-lbl-EHC,
+.atp-outlook-grid-lbl-JOI, .atp-outlook-grid-lbl-ATM, .atp-outlook-grid-lbl-ATU,
+.atp-outlook-grid-lbl-OMV {
+    background-color:$cell-light-gray;
+    & div {
+        background-color:$cell-light-gray;
+    }
+}
+
+.atp-outlook-grid-lbl-TGT {
+    background-color:#F4F4F4;
+    & div {
+        background-color:#F4F4F4;
+    }
+}
+.chargeability-grid-cell .cell-span {
+    padding: 4px 1px 3px 1px;
+}
+.chargeability-grid-cell .cell-numbers {
+    text-align: right;
+    float: left;
+    width: 55%;
+}
+.chargeability-grid-cell .cell-variance {
+    width: 45%;
+    text-align: left;
+    float: right;
+}
+.chargeability-grid-cell .cell-variance i{
+    position: relative;
+    top: 8px;
+}
+.chargeability-grid-cell input {
+    margin-top: 1%;
+    width: 50% !important;
+    margin-left: 8%;
+    float: left;
+    padding: 0 5px !important;
+}

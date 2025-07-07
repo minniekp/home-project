@@ -1,0 +1,189 @@
+// import
+@import "../../variables";
+.atp-list {
+    border-radius: $border-radius;
+}
+.atp-list-hd {
+    box-sizing:border-box;
+    background-color:$GRAY_E5;
+    border-bottom:1px solid $GRAY_E2;
+    overflow:hidden;
+    font-weight:bold;
+    color:$BLACK;
+    padding:10px 40px 10px 30px;
+    border-radius: $radius-top;
+
+    .atp-list-c {
+        line-height:30px;
+        font-weight: bold;
+        color: $BLACK;
+        text-align: left;
+    }
+
+    .atp-list-c:not(:last-child) {
+        border-right: 1px solid $GRAY_E2;
+    }
+}
+.atp-list-r {
+    height: auto;
+    box-sizing: border-box;
+    border-bottom:1px solid $GRAY_E2;
+    padding:13px 40px 13px 30px;
+    color:$BLACK;
+    position:relative;
+    -webkit-transition: all .4s; /* Safari */
+    transition: all .4s;
+
+    .atp-list-btn {
+        position: absolute;
+        top:0;
+        
+        i {
+            display:block;
+            width:46px;
+            height:46px;
+            line-height: 46px;
+            text-align: center;
+            font-size:2.6rem;
+            color:$GRAY_67;
+            cursor: pointer;
+        }
+    }
+    .atp-list-expand {
+        left: 0;
+    }
+    .atp-list-actions {
+        right: 5px;
+
+        ul {
+            position: absolute;
+            top: 5px;
+            right: 40px;
+            width: 150px;
+            padding: 8px 0;
+            background-color: $WHITE;
+            box-shadow: $box-shadow;
+            list-style-type: none;
+            border-radius: $border-radius;
+            z-index: 1;
+
+            li {
+                padding-left: 50px;
+                height:40px;
+                line-height: 40px;
+                display: block;
+                position: relative;
+                background-color: transparent;
+                -webkit-transition: background-color .3s; /* Safari */
+                transition: background-color .3s;
+                a {
+                    color: $GRAY_555;
+                }
+                i {
+                    position: absolute;
+                    top: 0;
+                    left: 5px;
+                    width:40px;
+                    height:40px;
+                    line-height: 40px;
+                    font-size:2rem;
+                }
+                span {
+                    text-transform: capitalize;
+                }
+
+                &:hover {                      
+                    cursor: pointer;
+                    background-color:#0041F0;
+                    color: $WHITE;
+                }
+
+                &:hover {
+                    i {                       
+                        color: $WHITE;
+                    }
+                }
+            }
+        }
+    }
+}
+.atp-list-r-active {
+    background-color:#E6DCFF;
+}
+.atp-list-r-deleted {
+    height:0;
+    padding:0 40px 0 30px;
+    border:0;
+    overflow: hidden;
+}
+.atp-list-c {
+    box-sizing:border-box;
+    padding-left:15px;
+    display:inline-block;
+    vertical-align:top;
+
+    a, span {
+        display:flex;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+    .isinvalid{
+        color:$MONZA;
+        margin-left:3px;
+    }
+}
+
+.atp-list-detail-cont{
+    .atp-list-detail{
+        word-wrap:break-word;
+        white-space: normal;
+        overflow:hidden;
+        display: flex;
+        border:1px solid $GRAY_E2;
+        border-bottom:0;
+        margin:0;
+        
+        .atp-list-detail-lbl{
+           width:30%;
+           box-sizing: border-box;
+           padding:10px;
+        }
+        
+        .atp-list-detail-val{
+            width: 70%;
+            box-sizing: border-box;
+            padding:10px;
+            font-weight:bold;
+            border-left:1px solid $GRAY_E2;
+            margin-left:0;
+        }
+    
+        &:last-child{
+            border:1px solid $GRAY_E2;
+        }
+    }
+}
+
+.atp-list-mhd{
+    cursor:pointer;
+    position:relative;
+}
+.atp-list-showmore{
+    text-align:center;
+    padding:12px 0;
+    background-color:$GRAY_FA;
+    border-radius: $radius-bottom;
+    a {
+        color: $PURPLE_DARK;
+    }
+}
+
+.atp-list-icn{
+    position:absolute;
+    top:2px;
+}
+
+.disable-archive {
+    pointer-events: none;
+    color: $GRAY_6F;
+}

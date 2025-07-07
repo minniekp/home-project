@@ -1,0 +1,107 @@
+@import "../variables";
+
+// home
+#Section-Home, #Outlook-Home  {
+    // nav-list
+    ul.nav {
+        display: flex;
+        flex-wrap: wrap;
+        padding-left: 0;
+        list-style: none;
+        padding: 0;
+        position: relative;
+        li {
+            display: list-item;
+            box-sizing: border-box;
+            margin-right: 1px;
+            .nav-link {
+                padding-left: 20px;
+                padding-right: 20px;
+                color: $BLACK;
+                font-weight: bold;
+                text-transform: uppercase;
+                display: inline-block;
+                margin-right: 15px;
+                border-bottom: 5px solid transparent;
+                height: 36px;
+                line-height: 36px;
+                cursor: pointer;
+                position: relative;
+                &:before {
+                    bottom: -5px;
+                    display: block;
+                    height: 5px;
+                    width: 0%;
+                    content: "";
+                    position: absolute;
+                    transition: all 0.35s ease;
+                }
+                &:focus:before,
+                &:hover:before {
+                    opacity: 1;
+                    width: 100%;
+                }
+                &:hover {
+                    color: $BLACK;
+                    transition: all 0.35s ease;
+                }
+                .sr-only {
+                    padding-left: 20px;
+                    padding-right: 20px;
+                    display: none;
+                }
+                &.active {
+                    color: $BLACK;
+                    border: 1px solid $PURPLE_DARK;
+                    border-bottom: 7px solid #fafafa;
+                    border-radius: 5px;
+                    cursor: default;
+                    outline: none;
+                    &:focus:before,
+                    &:hover:before {
+                        display: none;
+                    }
+                    .sr-only {
+                        display: block;
+                    }
+                }
+                &.active-new {
+                    color: $BLACK;
+                    border-bottom: 5px solid $PURPLE_DARK;
+                    cursor: default;
+                    outline: none;
+                    &:focus:before,
+                    &:hover:before {
+                        display: none;
+                    }
+                    .sr-only {
+                        display: block;
+                    }
+                }
+            }
+        }
+        // lg version
+        &.nav-lg {
+            li {
+                .nav-link {
+                    font-size: 1.5rem;
+                }
+                .f-13 {
+                    font-size: 13px;
+                }
+            }
+        }
+    }
+    .atp-tab-active-new {
+        color: $BLACK;
+        border-bottom: 5px solid $PURPLE_DARK;
+        cursor: default;
+        &:focus:before,
+        &:hover:before {
+            display: none;
+        }
+        .sr-only {
+            display: block;
+        }
+    }
+}

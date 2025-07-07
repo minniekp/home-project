@@ -1,0 +1,486 @@
+
+// import
+@import "../../variables";
+/*Modal*/
+.atp-modal{
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    z-index:9999;
+    background-color: rgba(0,0,0,0.4);
+    
+    //Content
+    .atp-modal-cont{
+        box-shadow: $box-shadow-modal;
+        position:absolute;
+        background: white;
+
+        //Head
+        .atp-modal-head {
+            position: absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:50px;
+            line-height:50px;
+            background-color:$WHITE;
+            color:$WHITE;
+            font-size:1.8rem;
+            padding:0 20px;
+            box-sizing: border-box;
+            border-radius: $radius-top;
+
+            .modal-title {
+                font: weight 600;
+                color:$BLACK;
+                font-size:1.8rem;
+                display:inline;
+            }
+
+            .atp-modal-close{
+                position:relative;
+                float:right;
+                top:13px;
+                right: -8px;
+                color:$BLACK;
+                &:hover{
+                    cursor:pointer;
+
+                }
+            }
+        }
+
+        .atp-modal-fixed-message {
+            padding: 20px 20px 0px;
+            .atp-notif-item.atp-notif-warning {
+                width: 97%;
+                margin: 0;
+            }
+        }
+
+        //Body
+        .atp-modal-body{
+            box-sizing: border-box;
+            padding: 20px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: absolute;
+            top:50px;
+            bottom:64px;
+            width:100%;
+            background:$GRAY_FA;
+            //label
+            .atp-modal-lbl,
+            .form-group label {
+                font-size:1.3rem;
+                margin-bottom:10px;
+                font-weight:bold;
+            }
+            .atp-modal-chScope
+            {
+                font-size:1.3rem;
+                margin-bottom:10px;
+                font-weight:bold;
+                padding-left: 150px;
+            }
+
+            .atpn-hchy{
+                padding:0;
+                margin-bottom:20px;
+            }
+        }
+        .atp-modal-body.atp-modal-body-fixed-message {
+            top: 126px;
+        }
+        
+        .atp-modal-lbl2 {
+            font-size:1.3rem;
+            margin-bottom:30px;
+            font-weight:bold;
+        }
+        //Buttons
+        .atp-modal-btns{
+            position: absolute;
+            bottom:0;
+            left:0;
+            padding:15px 20px;
+            width:100%;
+            height: 64px;
+            box-sizing:border-box;
+            text-align:right;
+            border-top:1px solid $GRAY_E2;
+            background-color:$WHITE;
+            z-index:999;
+            border-radius: $radius-bottom;
+
+            .atp-btn {
+                margin-left:8px;
+            }
+            .atp-btn-allFC {
+                cursor: pointer;;
+            }
+        }
+        .atp-modal-lbl-co {
+            input {
+                margin-bottom: 15px;
+            }
+        }
+    }
+}
+.atp-modal-simChScope {
+    display: flex;
+}
+
+.atp-createmodel-ChScopeSelection {
+    padding-left: 220px;
+}
+/*Create Forecast*/
+.atp-createforecast-txt,
+input.form-control {
+    width:100%;
+    box-sizing: border-box;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom:20px;
+}
+.atp-createforecast-txtarea,
+textarea.form-control {
+    width:100%;
+    padding:10px;
+    box-sizing: border-box;
+    border:1px solid $form-border;
+    margin-bottom:20px;
+}
+.atp-createforecast-radios, 
+input[type="radio"].form-control {
+    margin-bottom:20px;
+    &>label{
+        margin-right:10px;
+        cursor:pointer;
+    }
+}
+label.custom_layout{
+    padding-left: 22px;
+    margin: 0px;
+    padding-right: 0px;
+}
+span.checkmark{
+    top: 0px;
+}
+#cascadeForecast + span.checkmark{
+    top:9px;
+}
+.atp-selfhelp,
+.atp-modal-yesno,
+.atp-modal-forecast,
+.atp-modal-shared {
+    width:600px;
+    top:55px;
+    bottom:46px;
+    left:50%;
+    margin-left:-300px;
+}
+.atp-modal-shared-bookmark {
+    bottom:170px;
+}
+.atp-modal-forecast-copy,
+.atp-modal-forecast-submit,
+.atp-modal-forecast-saveas,
+.atp-modal-forecast-edit {
+    top:50%;
+    height: 400px;
+    margin-top:-200px;
+    bottom:auto;
+}
+.atp-modal-bookmark {
+    width:600px;
+    top:30%;
+    height: 260px;
+    margin-top:-150px;
+    left:30%;
+    bottom:auto;
+}
+.atp-modal-bookmark-error {
+    width:600px;
+    top:30%;
+    height: 310px;
+    margin-top:-150px;
+    left:30%;
+    bottom:auto;
+}
+.atp-modal-yesno {
+    top:50%;
+    height:200px;
+    margin-top:-100px;
+}
+
+.atp-modal-tooltip-lbl-info {
+    position: relative;
+    display: inline-block;
+
+    .material-icons {
+        position: relative;
+        font-size:2.1rem;
+        color:#596773;
+        cursor: pointer;
+        top: 3px;
+    }
+
+    .atp-modal-tooltip-lbl-info-txt {
+        position: absolute;
+        right: -338px;
+        top: -2px;
+        display: inline-block;
+        width: 310px;
+        z-index: 9;
+        display: none;
+    }
+
+    &:hover {
+        .atp-modal-tooltip-lbl-info-txt {
+            display: inline;
+        }
+    }
+}
+
+.atp-cascadeforecast-radios .label-txt {
+    color: $GRAY_67;
+}
+
+/* shared modal */
+.atp-modal-shared {
+    min-height: 484px; //height of shared modal carefully computed
+    bottom: auto;
+    margin-top: -242px;
+    top: 50%;
+    .form-control.active {
+        border-radius: $radius-top;
+    }
+}
+
+/* User list dropdown */
+.atp-modal-share-div-complete-user-list {
+    max-height:216px;
+    overflow:auto;
+    box-shadow: $box-shadow-light;
+    border-radius: $radius-bottom;
+    margin:0;
+    padding: 0;
+
+    border: 1px solid $form-border;
+    border-top: 0;
+
+
+}
+
+/* Selected user */
+.atp-modal-share-span-selected-user {
+    border: 0;
+    border-radius: 20px; 
+    display: inline-block; 
+    padding: 6px 36px 6px 6px;
+    margin-top: 12px;
+    margin-right: 12px;
+    background-color:$WHITE;
+    box-shadow: $box-shadow-btn;
+    position: relative;
+    border-top: 1px solid $GRAY_E2;
+}
+
+/* Remove user button */
+.atp-modal-share-btn-remove-user {
+    border-radius: 0;
+    border: 0;
+    background: none;
+    padding: 0 5px;
+    color:  lighten($GRAY_6F, 0%);
+    cursor: pointer;
+    font-size: 2rem;
+    position: absolute;
+    top: 4px;
+    right: 0;
+    i {
+        font-size: 2rem;
+    }
+    .sr-only {
+        color: $BLACK;
+    }
+}
+
+/* Change color of dropdown links on hover */
+.atp-modal-share-div-user-detail { 
+    padding: 10px;
+    transition: .3s;
+    border-top: 1px solid $GRAY_E2;
+    &:hover, &:focus {
+        background-color: $BLUE_ACTIVE_BG;
+        outline: 0;
+    }
+}
+
+.atp-modal-share-div-text-warn {
+    color: $MONZA;
+}
+.atp-modal-row {
+    display:flex;
+    .atp-modal-col{
+        width:100%;
+        padding-bottom: 20px;
+        i {
+            position: relative;
+            top: 3px;
+            font-size: 2.1rem;
+            color: $GRAY_878;
+            vertical-align: bottom;
+            cursor: pointer;
+        }
+        .atp-modal-wrp{
+            .atpn-hchy{
+                background-color:$WHITE;
+                border: 1px solid $form-border;
+                border-top:0;
+                padding:15px 10px 10px;
+                max-height:300px;
+                overflow-y:auto;
+                border-radius: $radius-bottom;
+                box-shadow: $box-shadow-light;
+                i {
+                    position: relative;
+                    cursor: pointer;
+                    vertical-align: super;
+                    color: #333;
+                }
+            }
+            .atp-modal-fakedd {
+                padding:0 15px;
+                border: 1px solid $form-border;
+                height:40px;
+                line-height:40px;
+                border-radius:$border-radius;
+                position:relative;
+                cursor:pointer;
+                background-color: $WHITE;
+                width: 100%;
+                display: block;
+                text-align: left;
+                box-sizing: border-box;
+                i {
+                    float: right;
+                    margin-top: 9px;
+                    margin-right: -7px;
+                }
+                &[aria-expanded=true] {
+                    border-radius: $radius-top;
+                }
+            }
+            .atp-modal-fakedd-lock-quarter {
+                padding:0 15px;
+                border: 1px solid $form-border;
+                height:40px;
+                line-height:40px;
+                border-radius:$border-radius;
+                position:relative;
+                cursor:pointer;
+                background-color: $WHITE;
+                width: 50%;
+                display: block;
+                text-align: left;
+                box-sizing: border-box;
+                i {
+                    float: right;
+                    margin-top: 9px;
+                    margin-right: -7px;
+                }
+                &[aria-expanded=true] {
+                    border-radius: $radius-top;
+                }
+            }
+            .atpn-hchy-lock-quarter{
+                background-color:$WHITE;
+                border: 1px solid $form-border;
+                border-top:0;
+                padding: 5px 10px;
+                max-height:300px;
+                width: 46%;
+                position: relative;
+                overflow-y:auto;
+                border-radius: $radius-bottom;
+                box-shadow: $box-shadow-light;
+                i {
+                    position:relative;
+                    top:1px;
+                    cursor:pointer;
+                    vertical-align: super;
+                    color:$GRAY_333;
+                }
+            }
+        }
+    }
+}
+
+.atp-model-icon { 
+    position: relative;
+    top: 1px;
+    font-size: 2.1rem;
+    color: $GRAY_878;
+    cursor: pointer;
+    vertical-align: bottom;
+} 
+
+.atp-model-type-radio {
+    margin-top:10px;
+}
+.label-txt {
+    color: $GRAY_67;
+}
+
+.atp-model-grey-icon { 
+    position: relative;
+    top: 1px;
+    font-size: 2.1rem;
+    color: $GRAY_67;
+    vertical-align: bottom;
+}
+.atp1{
+    height: 100px; 
+}   
+.atp-copy-model {
+    height: 410px;
+}
+
+.unauth-share-user {
+    color: #CC0000;
+}
+
+.atp-modal-body.atp-rollup-body-fixed-message {
+    top: 110px !important;
+}
+
+.atp-rollup-model-height {
+    height: calc(100% - 400px)
+}
+
+
+
+.lock-quarter-dd {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-left: 4px;
+    margin-left: 2px;
+    margin-bottom: 2px;
+    cursor: pointer;  
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding-top: 2px;
+    padding-bottom: 2px;
+      margin-right: 2px;
+      &:hover{
+        background-color:$GRAY_E9;
+    }
+    color: $BLACK;
+}
