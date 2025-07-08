@@ -1,12 +1,16 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-// import BookmarkSimulator from '../bookMark/bookmark'; // Implement or import as needed
-// import Hierarchy from '../hierarchy/hierarchy'; // Implement or import as needed
-// import Selected from '../hierarchy/selected'; // Implement or import as needed
-// import CustomText from '../textarea/textarea'; // Implement or import as needed
-// import utility from '../../utility/utility';
-// import constList from '../../store/constants';
-// import constants from '../../utility/constants';
-// import axios from 'axios';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Typography,
+  Box,
+  IconButton
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const features =
   typeof window !== "undefined" && (window as any).applicationConfig?.features
@@ -39,6 +43,8 @@ interface Model {
 }
 
 interface CreateModelProps {
+  show: boolean;
+  onClose: () => void;
   model: Model;
   isAddMoreModel?: boolean;
   oculusId?: number;
@@ -46,11 +52,12 @@ interface CreateModelProps {
   mode?: string;
   isSharedCopy?: boolean;
   lockedQuarter?: string;
-  onClose: () => void;
   onSwitchTab?: () => void;
 }
 
 const CreateModel: React.FC<CreateModelProps> = ({
+  show,
+  onClose,
   model: initialModel,
   isAddMoreModel = false,
   oculusId,
@@ -58,8 +65,6 @@ const CreateModel: React.FC<CreateModelProps> = ({
   mode = '',
   isSharedCopy = false,
   lockedQuarter = '',
-  onClose,
-  onSwitchTab,
 }) => {
   // State
   const [model, setModel] = useState<Model>({ ...initialModel });
@@ -73,22 +78,10 @@ const CreateModel: React.FC<CreateModelProps> = ({
     isoverlapped: false,
     model: [],
   });
-  const [bookmarkdetail, setBookmarkdetail] = useState<any>({
-    bookmark_id: 0,
-    ph: [],
-    lh: [],
-    bookmark_name: '',
-    bookmark_page: 'SIMULATOR',
-    phdetail: 0,
-    islhdetail: false,
-  });
   const [alertMsg, setAlertMsg] = useState<{ text: string; visible: boolean }>({ text: '', visible: false });
   const [simpleError, setSimpleError] = useState<{ text: string; visible: boolean }>({ text: '', visible: false });
   const [complexError, setComplexError] = useState<{ text: string; visible: boolean }>({ text: '', visible: false });
   const [isloading, setIsloading] = useState(false);
-  const [bookmarkdisable, setBookmarkdisable] = useState(false);
-  const [isModelTypeDisabled, setIsModelTypeDisabled] = useState(false);
-  const [isManuallySelectedCombined, setIsManuallySelectedCombined] = useState(false);
   const [lockconfig, setLockconfig] = useState({ showtree: false, selected: 'No' });
   const [lockQuarter, setLockQuarter] = useState<string[]>(['No']);
 
@@ -130,7 +123,6 @@ const CreateModel: React.FC<CreateModelProps> = ({
     if (isloading) return;
     setSimpleError({ text: '', visible: false });
     setComplexError({ text: '', visible: false });
-    // Clear bookmark and hierarchy configs as needed
     onClose();
   }
 
@@ -144,29 +136,22 @@ const CreateModel: React.FC<CreateModelProps> = ({
     resetError();
   }
 
-  // Add more handlers for hierarchy, bookmark, lock quarter, etc.
-
-  // Example: toggle lock quarter dropdown
   function toggleQuarters() {
     setLockconfig(lc => ({ ...lc, showtree: !lc.showtree }));
   }
 
-  // Example: update selected lock quarter
   function updateSelectedQuarter(item: string) {
     setLockconfig(lc => ({ ...lc, selected: item, showtree: false }));
   }
 
-  // Example: check for errors (simplified)
   function hasErrors() {
     if (!model.name || model.name.trim().length < 3) {
       setSimpleError({ text: 'Model name must be at least 3 characters.', visible: true });
       return true;
     }
-    // Add more error checks as needed
     return false;
   }
 
-  // Example: submit/copy/activate handler
   function targetMethod() {
     if (mode === 'copy' && model.isActivated === true) {
       // activeArchivedOculus();
@@ -179,149 +164,145 @@ const CreateModel: React.FC<CreateModelProps> = ({
     }
   }
 
-  // Example: lock quarter dropdown options (simulate API call)
   useEffect(() => {
     if (features.jul22ModelToScenario) {
-      // Simulate API call to get lock quarters
       setLockQuarter(['No', 'Through FY24 Q1', 'Through FY24 Q2']);
     }
   }, []);
 
-  // Render
   return (
-    <div className="animated fadeIn atp-modal">
-      <div
-        id="Modal-Dtm-Model-Name"
-        className={`atp-modal-cont atp-modal-forecast${mode === 'copy' ? ' atp-copy-model' : ''}${bookmark.bookmarkSelected ? ' atp-modal-shared-bookmark' : ''}`}
-      >
-        <div className="atp-modal-head">
-          <h2 id="Title-Dtm-Model-Name" className="modal-title">{titleText}</h2>
-          {/* {mode !== 'addModel' && mode !== 'copy' && (
-            <BookmarkSimulator onUpdate={updateReportConfigsBookmark} bookmarkdetail={bookmarkdetail} />
-          )} */}
-          <button type="button" aria-label="Close modal (Define your model)" className="btn-icon atp-modal-close close" onClick={closeDlg}>
-            <i aria-hidden="true" className="material-icons">close</i>
-          </button>
-        </div>
+    <Dialog open={show} onClose={closeDlg} maxWidth="sm" fullWidth>
+      <DialogTitle sx={{ m: 0, p: 2 }}>
+        {titleText}
+        <IconButton
+          aria-label="close"
+          onClick={closeDlg}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+          size="large">
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent dividers>
         {alertMsg.visible && (
-          <div className="atp-modal-fixed-message">
-            <div id="Label-Dtm-Model-Alert" role="alert" className="animated fadeInUp atp-notif-item atp-notif-warning" dangerouslySetInnerHTML={{ __html: alertMsg.text }} />
-          </div>
+          <Box mb={2}>
+            <Typography color="warning.main" dangerouslySetInnerHTML={{ __html: alertMsg.text }} />
+          </Box>
         )}
-        <div className={alertMsg.visible ? 'atp-modal-body atp-modal-body-fixed-message' : 'atp-modal-body'}>
-          {complexError.visible && (
-            <div id="Alert-Dtm-Model-Error" role="alert" className="animated fadeInUp atp-notif-item atp-notif-item-error notif-icon m-b-20" aria-label={complexError.text}>
-              <img src="/images/error-icon.svg" className="animated fadeInUp img-icon" alt="Error" />
-              <div className="notif-text">
-                <p className="m-0">{complexError.text}</p>
-              </div>
-            </div>
-          )}
-          {simpleError.visible && (
-            <div id="Label-Dtm-Model-Error" role="alert" className="animated fadeInUp atp-notif-item atp-notif-item-error" dangerouslySetInnerHTML={{ __html: simpleError.text }} />
-          )}
-          <div>
-            <label id="Label-Dtm-ModelCreation-Name" className="atp-modal-lbl" htmlFor="Input-Dtm-ModelCreation-Name">
-              <span>{SimulatorName} </span>
-              <span aria-label="(Required field)" className="field-req">*</span>
-            </label>
-            <input
-              id="Input-Dtm-ModelCreation-Name"
-              name="name"
-              value={bookmark.bookmarkSelected ? bookmark.bookmark_name : model.name}
-              className="atp-createforecast-txt"
-              type="text"
-              placeholder={mode === 'copy' ? 'Give your simulation a unique name' : 'Give a unique name'}
-              aria-required="true"
-              disabled={isAddMoreModel}
-              onChange={e => {
-                if (bookmark.bookmarkSelected) setBookmark(b => ({ ...b, bookmark_name: e.target.value }));
-                else setModel(m => ({ ...m, name: e.target.value }));
-                resetError();
-              }}
-              maxLength={255}
-            />
-            {/* Replace with your CustomText component */}
-            <textarea
-              id="Texarea-Dtm-ModelCreation-descrip"
-              name="desc"
-              value={model.desc}
-              className="atp-createforecast-txt"
-              maxLength={500}
-              placeholder={mode === 'copy'
+        {complexError.visible && (
+          <Box mb={2} display="flex" alignItems="center">
+            <img src="/images/error-icon.svg" alt="Error" style={{ marginRight: 8, width: 24, height: 24 }} />
+            <Typography color="error">{complexError.text}</Typography>
+          </Box>
+        )}
+        {simpleError.visible && (
+          <Box mb={2}>
+            <Typography color="error" dangerouslySetInnerHTML={{ __html: simpleError.text }} />
+          </Box>
+        )}
+        <Box mb={2}>
+          <Typography variant="subtitle1" component="label" htmlFor="Input-Dtm-ModelCreation-Name">
+            {SimulatorName} <span aria-label="(Required field)" style={{ color: 'red' }}>*</span>
+          </Typography>
+          <TextField
+            id="Input-Dtm-ModelCreation-Name"
+            name="name"
+            value={bookmark.bookmarkSelected ? bookmark.bookmark_name : model.name}
+            fullWidth
+            margin="dense"
+            variant="outlined"
+            placeholder={mode === 'copy' ? 'Give your simulation a unique name' : 'Give a unique name'}
+            required
+            disabled={isAddMoreModel}
+            onChange={e => {
+              if (bookmark.bookmarkSelected) setBookmark(b => ({ ...b, bookmark_name: e.target.value }));
+              else setModel(m => ({ ...m, name: e.target.value }));
+              resetError();
+            }}
+            inputProps={{ maxLength: 255 }}
+          />
+          <TextField
+            id="Texarea-Dtm-ModelCreation-descrip"
+            name="desc"
+            value={model.desc}
+            fullWidth
+            margin="dense"
+            variant="outlined"
+            multiline
+            minRows={3}
+            maxRows={6}
+            inputProps={{ maxLength: 500 }}
+            placeholder={
+              mode === 'copy'
                 ? 'Add a brief description of your simulation (up to 500 alphanumeric characters)'
                 : !isAddMoreModel
                   ? 'Add a brief description (up to 500 alphanumeric characters)'
-                  : ''}
-              onChange={handleInputChange}
-              onKeyUp={resetError}
+                  : ''
+            }
+            onChange={handleInputChange}
+            onKeyUp={resetError}
+            disabled={isAddMoreModel}
+          />
+        </Box>
+        {features.jul22ModelToScenario && (
+          <Box mb={2}>
+            <Typography variant="subtitle2" component="div" gutterBottom>
+              Do you want to lock any Quarter forecast?
+              <span title="Selecting a quarter freezes the live forecast from DTM until that quarter." style={{ marginLeft: 8, color: '#888', cursor: 'pointer' }}>ℹ️</span>
+            </Typography>
+            <Button
+              id={`Btn-Dtm-Modal-LockQuarter-Selected-${lockconfig.selected.replace(/\s/g, '')}`}
+              aria-expanded={lockconfig.showtree ? 'true' : 'false'}
+              type="button"
+              variant="outlined"
+              onClick={toggleQuarters}
               disabled={isAddMoreModel}
-            />
-          </div>
-          {/* Add hierarchy, contract, chargeability, model type, lock quarter, etc. as needed */}
-          {/* ... */}
-          {features.jul22ModelToScenario && (
-            <div className="atp-modal-row">
-              <div className="atp-modal-col">
-                <div className="atp-modal-wrp">
-                  <div id="Label-modal-lock-quarter" className="atp-modal-lbl">
-                    <span>Do you want to lock any Quarter forecast?</span>
-                    <i role="tooltip" title="Selecting a quarter freezes the live forecast from DTM until that quarter." className="atp-modal-info material-icons">info</i>
-                  </div>
-                  <button
-                    id={`Btn-Dtm-Modal-LockQuarter-Selected-${lockconfig.selected.replace(/\s/g, '')}`}
-                    aria-expanded={lockconfig.showtree ? 'true' : 'false'}
-                    type="button"
-                    className="atp-modal-fakedd-lock-quarter"
-                    onClick={toggleQuarters}
-                    disabled={isAddMoreModel}
+              sx={{ mb: 1 }}
+            >
+              {lockconfig.selected}
+            </Button>
+            {lockconfig.showtree && (
+              <Box>
+                {lockQuarter.map((item, idx) => (
+                  <Button
+                    key={idx}
+                    id={`Btn-Dtm-Modal-LockQuarter-${item.replace(/\s/g, '')}`}
+                    onClick={() => updateSelectedQuarter(item)}
+                    sx={{ mr: 1, mb: 1 }}
+                    variant="text"
                   >
-                    {lockconfig.selected}
-                    <i aria-hidden="true" className="material-icons">keyboard_arrow_down</i>
-                  </button>
-                  <div>
-                    {lockconfig.showtree && (
-                      <div className="atpn-hchy-lock-quarter animated fadeIn">
-                        {lockQuarter.map((item, idx) => (
-                          <a
-                            key={idx}
-                            id={`Btn-Dtm-Modal-LockQuarter-${item.replace(/\s/g, '')}`}
-                            role="button"
-                            className="lock-quarter-dd"
-                            aria-disabled={lockconfig.showtree ? 'false' : 'true'}
-                            tabIndex={0}
-                            onClick={() => updateSelectedQuarter(item)}
-                            onKeyUp={e => e.key === 'Enter' && updateSelectedQuarter(item)}
-                          >
-                            {item}
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="atp-modal-btns">
-          <button id="Btn-Dtm-ModelCreation-Cancel" type="button" className="atp-btn atp-btn-cancel" aria-label="Cancel model" onClick={closeDlg}>
-            Cancel
-          </button>
-          <button
-            id="Btn-Dtm-ModelCreation-Create"
-            type="button"
-            className={`atp-btn ${!isloading && !submissionDisabled ? 'atp-btn-ok' : 'atp-btn-disabled'}`}
-            aria-label="Create model"
-            aria-disabled={isloading || submissionDisabled}
-            disabled={isloading || submissionDisabled}
-            onClick={targetMethod}
-          >
-            {buttonText}
-          </button>
-        </div>
-      </div>
-    </div>
+                    {item}
+                  </Button>
+                ))}
+              </Box>
+            )}
+          </Box>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button
+          id="Btn-Dtm-ModelCreation-Cancel"
+          onClick={closeDlg}
+          color="secondary"
+          variant="outlined"
+        >
+          Cancel
+        </Button>
+        <Button
+          id="Btn-Dtm-ModelCreation-Create"
+          color="primary"
+          variant="contained"
+          disabled={isloading || submissionDisabled}
+          onClick={targetMethod}
+        >
+          {buttonText}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

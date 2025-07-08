@@ -47,6 +47,14 @@ const ROLLUP_TABS = [
   { label: 'Archived', key: 'archived' }
 ];
 
+const defaultModel = {
+  ph: [],
+  geo: [],
+  contract: 'N',
+  selected_type: 'S',
+  modeling_type: 'Q'
+};
+
 const Home = () => {
   // Replace with your store/context logic
   const store = typeof window !== "undefined" && (window as any).$store
@@ -63,9 +71,6 @@ const Home = () => {
     contract: 'N', cascade_method: 'A', name: '', desc: '', archive_flag: ''
   }));
   const [forecastMode, setForecastMode] = useState('create');
-  const [model, setModel] = useState(utility.clone({
-    ph: [], geo: [], contract: 'N', selected_type: 'S', modeling_type: 'Q'
-  }));
   const [mode, setMode] = useState('');
   const [shareOculusId, setShareOculusId] = useState(null);
   const [isSharedCopy, setIsSharedCopy] = useState(false);
@@ -94,8 +99,11 @@ const Home = () => {
     { label: 'Archived', isActive: false }
   ]);
   const [isReady, setIsReady] = useState(true);
-  const [showCreateModelDialog, setShowCreateModelDialog] = useState(false);
   const [showRollupDialog, setShowRollupDialog] = useState(false);
+
+   const [showCreateModelDialog, setShowCreateModelDialog] = useState(false);
+  const [model, setModel] = useState(utility.clone(defaultModel));
+  const createModelDialog = useRef<{ show?: () => void; hide?: () => void }>(null);
 
   // Sections
   const [sections, setSections] = useState(() => [
@@ -305,7 +313,24 @@ const Home = () => {
     }));
     if (createRollupDialogRef.current && createRollupDialogRef.current.show) createRollupDialogRef.current.show();
   }
- 
+ const openModelCreationModal = () => {
+    setShowCreateModelDialog(true);
+    const newModel = utility.clone(defaultModel);
+    newModel.modeling_type = 'Q';
+    setModel(newModel);
+    // If you need to call a method on the modal, use the ref:
+    if (createModelDialog.current && createModelDialog.current.show) {
+      createModelDialog.current.show();
+    }
+  };
+
+  // Handler to close the modal
+  const hideModelCreationModal = () => {
+    setShowCreateModelDialog(false);
+    if (createModelDialog.current && createModelDialog.current.hide) {
+      createModelDialog.current.hide();
+    }
+  };
 
   return (
     <div className="atp-page" style={{ marginLeft: 32 }}>
@@ -423,6 +448,18 @@ const Home = () => {
               >
                 Simulation
               </span>
+              <div>
+     <button onClick={() => setShowCreateModelDialog(true)}>Simulate</button>
+
+      {/* Modal */}
+      {showCreateModelDialog && (
+        <CreateModel
+  show={showCreateModelDialog}
+  onClose={() => setShowCreateModelDialog(false)}
+  model={model}
+/>
+      )}
+    </div>
               <span
                 className={`nav-item${activeOculusSection.value === 'Roll-Up' ? ' active' : ''}`}
                 style={{
