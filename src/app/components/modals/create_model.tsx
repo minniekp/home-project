@@ -10,52 +10,40 @@ import {
   Box,
   IconButton
 } from '@mui/material';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CloseIcon from '@mui/icons-material/Close';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import Hierarchy from '../hierarchy/hierarchy'; // Adjust the import path as necessary
+import Selected from '../hierarchy/selected'; // Adjust the import path as necessary
+
+// Extend the Window interface to include applicationConfig
+declare global {
+  interface Window {
+    applicationConfig?: {
+      features?: Record<string, any>;
+      [key: string]: any;
+    };
+  }
+}
 
 const features =
-  typeof window !== "undefined" && (window as any).applicationConfig?.features
-    ? (window as any).applicationConfig.features
+  typeof window !== "undefined" && window.applicationConfig?.features
+    ? window.applicationConfig.features
     : {};
-
-interface Bookmark {
-  bookmark_id: number;
-  bookmark_name: string;
-  bookmark_page: string;
-  bookmarkSelected: boolean;
-  ischanged: boolean;
-  isallchanged: boolean;
-  isoverlapped: boolean;
-  model: any[];
-}
-
-interface Model {
-  ph: any[];
-  geo: any[];
-  contract: string;
-  selected_type: string;
-  modeling_type: string;
-  name: string;
-  desc: string;
-  isChargeable?: string;
-  isActivated?: boolean;
-  id?: number;
-  [key: string]: any;
-}
 
 interface CreateModelProps {
   show: boolean;
   onClose: () => void;
-  model: Model;
+  model: any;
   isAddMoreModel?: boolean;
-  oculusId?: number;
-  liveCompare?: boolean;
+  oculusId?: any;
+  liveCompare?: any;
   mode?: string;
   isSharedCopy?: boolean;
   lockedQuarter?: string;
-  onSwitchTab?: () => void;
 }
 
-const CreateModel: React.FC<CreateModelProps> = ({
+const CreateModel = ({
   show,
   onClose,
   model: initialModel,
@@ -65,10 +53,10 @@ const CreateModel: React.FC<CreateModelProps> = ({
   mode = '',
   isSharedCopy = false,
   lockedQuarter = '',
-}) => {
+}: CreateModelProps) => {
   // State
-  const [model, setModel] = useState<Model>({ ...initialModel });
-  const [bookmark, setBookmark] = useState<Bookmark>({
+  const [model, setModel] = useState({ ...initialModel });
+  const [bookmark, setBookmark] = useState({
     bookmark_id: 0,
     bookmark_name: '',
     bookmark_page: '',
@@ -78,12 +66,26 @@ const CreateModel: React.FC<CreateModelProps> = ({
     isoverlapped: false,
     model: [],
   });
-  const [alertMsg, setAlertMsg] = useState<{ text: string; visible: boolean }>({ text: '', visible: false });
-  const [simpleError, setSimpleError] = useState<{ text: string; visible: boolean }>({ text: '', visible: false });
-  const [complexError, setComplexError] = useState<{ text: string; visible: boolean }>({ text: '', visible: false });
+  const [alertMsg, setAlertMsg] = useState({ text: '', visible: false });
+  const [simpleError, setSimpleError] = useState({ text: '', visible: false });
+  const [complexError, setComplexError] = useState({ text: '', visible: false });
   const [isloading, setIsloading] = useState(false);
   const [lockconfig, setLockconfig] = useState({ showtree: false, selected: 'No' });
-  const [lockQuarter, setLockQuarter] = useState<string[]>(['No']);
+  const [lockQuarter, setLockQuarter] = useState(['No']);
+  const [isModelTypeDisabled, setIsModelTypeDisabled] = useState(false);
+  const [isManuallySelectedCombined, setIsManuallySelectedCombined] = useState(false);
+
+  // Dummy configs and handlers for hierarchy (replace with your actual logic)
+  const [phconfig, setPhconfig] = useState({ showtree: false, showselected: false, selected: [] });
+  const [lhconfig, setLhconfig] = useState({ showtree: false, showselected: false, selected: [] });
+  const peopleHierarchyConfigMulti = {};
+  const locationHierarchyConfigMulti = {};
+  const togglePHTree = () => setPhconfig(cfg => ({ ...cfg, showtree: !cfg.showtree }));
+  const toggleLHTree = () => setLhconfig(cfg => ({ ...cfg, showtree: !cfg.showtree }));
+  const updateSelectedPH = (val: any) => setPhconfig(cfg => ({ ...cfg, selected: val, showselected: true }));
+  const updateSelectedLH = (val: any) => setLhconfig(cfg => ({ ...cfg, selected: val, showselected: true }));
+  const clearPH = () => setPhconfig(cfg => ({ ...cfg, selected: [], showselected: false }));
+  const clearLH = () => setLhconfig(cfg => ({ ...cfg, selected: [], showselected: false }));
 
   // Computed
   const submissionDisabled = useMemo(() => {
@@ -131,7 +133,7 @@ const CreateModel: React.FC<CreateModelProps> = ({
     setComplexError({ text: '', visible: false });
   }
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleInputChange(e: any) {
     setModel({ ...model, [e.target.name]: e.target.value });
     resetError();
   }
@@ -140,7 +142,7 @@ const CreateModel: React.FC<CreateModelProps> = ({
     setLockconfig(lc => ({ ...lc, showtree: !lc.showtree }));
   }
 
-  function updateSelectedQuarter(item: string) {
+  function updateSelectedQuarter(item: any) {
     setLockconfig(lc => ({ ...lc, selected: item, showtree: false }));
   }
 
@@ -220,7 +222,7 @@ const CreateModel: React.FC<CreateModelProps> = ({
             disabled={isAddMoreModel}
             onChange={e => {
               if (bookmark.bookmarkSelected) setBookmark(b => ({ ...b, bookmark_name: e.target.value }));
-              else setModel(m => ({ ...m, name: e.target.value }));
+              else setModel((m: any) => ({ ...m, name: e.target.value }));
               resetError();
             }}
             inputProps={{ maxLength: 255 }}
@@ -248,6 +250,200 @@ const CreateModel: React.FC<CreateModelProps> = ({
             disabled={isAddMoreModel}
           />
         </Box>
+        {/* Supervisory Org Hierarchy */}
+        <div className="atp-modal-row">
+          <div className="atp-modal-col">
+            <div className="atp-modal-wrp">
+              <div id="Label-Dtm-Home-PeopleHierarchy" className="atp-modal-lbl">
+                <span>Select Supervisory Org</span>
+                <span aria-label="(Required field)" className="field-req">*</span>
+             <InfoOutlinedIcon
+  titleAccess="Multiple selections permitted in Supervisory Org & Location simultaneously"
+  className="atp-modal-info"
+  fontSize="small"
+/>
+              </div>
+              <button
+                id="Btn-Dtm-Modal-PeopleHierarchy"
+                aria-expanded={phconfig.showtree ? 'true' : 'false'}
+                aria-controls="Collapse-Dtm-Modal-PeopleHierarchy"
+                type="button"
+                className="atp-modal-fakedd"
+                onClick={togglePHTree}
+              >
+                Expand to browse Hierarchy
+                <KeyboardArrowDownIcon aria-hidden="true" />
+              </button>
+              <div
+                id="Collapse-Dtm-Modal-PeopleHierarchy"
+                aria-describedby="Btn-Dtm-Modal-PeopleHierarchy"
+              >
+                {phconfig.showtree && (
+                  <Hierarchy
+                    rootId="CreateModel-peoplehierarchy"
+                    labelDescriptionExpandTrigger="Select People Hierarchy"
+                    config={peopleHierarchyConfigMulti}
+                    onSelect={updateSelectedPH}
+                    onClear={clearPH}
+                  />
+                )}
+              </div>
+              {phconfig.showselected && <Selected selected={phconfig.selected} />}
+            </div>
+          </div>
+        </div>
+        {/* Location Hierarchy */}
+        <div className="atp-modal-row">
+          <div className="atp-modal-col">
+            <div className="atp-modal-wrp">
+              <div id="Label-Dtm-Home-LocationHierarchy" className="atp-modal-lbl">
+                Select Location
+                <span aria-label="(Required field)" className="field-req">*</span>
+         <InfoOutlinedIcon
+  titleAccess="Multiple selections permitted in Supervisory Org & Location simultaneously"
+  className="atp-modal-info"
+  fontSize="small"
+/>
+              </div>
+              <button
+                id="Btn-Dtm-Home-LocationHierarchy"
+                aria-expanded={lhconfig.showtree ? 'true' : 'false'}
+                aria-controls="Collapse-Dtm-Home-LocationHierarchy"
+                type="button"
+                className="atp-modal-fakedd"
+                onClick={toggleLHTree}
+              >
+                Expand to browse Hierarchy
+                <KeyboardArrowDownIcon aria-hidden="true" />
+              </button>
+              <div
+                id="Collapse-Dtm-Home-LocationHierarchy"
+                aria-describedby="Btn-Dtm-Home-LocationHierarchy"
+              >
+                {lhconfig.showtree && (
+                  <Hierarchy
+                    rootId="CreateModel-locationHierarchyParam"
+                    config={locationHierarchyConfigMulti}
+                    onSelect={updateSelectedLH}
+                    onClear={clearLH}
+                  />
+                )}
+              </div>
+              {lhconfig.showselected && <Selected selected={lhconfig.selected} />}
+            </div>
+          </div>
+        </div>
+        {/* Contract-based and Chargeability Scope */}
+        <div className="atp-modal-simChScope">
+          <div id="Label-Dtm-Home-ContractBased" className="atp-modal-lbl">
+            Is this model contract-based?
+          </div>
+          <div className="atp-createmodel-radios">
+            <fieldset>
+              <legend className="sr-only">Is this scenario contract-based?</legend>
+              <label htmlFor="contractBasedYesModel" className="custom_layout">
+                <input
+                  id="contractBasedYesModel"
+                  type="radio"
+                  value="Y"
+                  name="iscontractModel"
+                  required
+                  checked={model.contract === 'Y'}
+                  onChange={() => setModel({ ...model, contract: 'Y' })}
+                />
+                <span className="checkmark" /> Yes
+              </label>
+              <label htmlFor="contractBasedNoModel" className="custom_layout">
+                <input
+                  id="contractBasedNoModel"
+                  type="radio"
+                  value="N"
+                  name="iscontractModel"
+                  required
+                  checked={model.contract === 'N'}
+                  onChange={() => setModel({ ...model, contract: 'N' })}
+                />
+                <span className="checkmark" /> No
+              </label>
+            </fieldset>
+          </div>
+        </div>
+        <div className="atp-createmodel-ChScopeSelection">
+          <fieldset>
+            <legend className="sr-only">Chargeability Scope?</legend>
+            <label htmlFor="inScopeModel" className="custom_layout">
+              <input
+                id="inScopeModel"
+                type="radio"
+                value="1"
+                name="chargScope"
+                required
+                checked={model.isChargeable === '1'}
+                onChange={() => setModel({ ...model, isChargeable: '1' })}
+              />
+              <span className="checkmark" /> In-Scope
+            </label>
+            <label htmlFor="outScopeModel" className="custom_layout">
+              <input
+                id="outScopeModel"
+                type="radio"
+                value="0"
+                name="chargScope"
+                required
+                checked={model.isChargeable === '0'}
+                onChange={() => setModel({ ...model, isChargeable: '0' })}
+              />
+              <span className="checkmark" /> Out-Scope
+            </label>
+          </fieldset>
+        </div>
+        {/* Model Type */}
+        <div id="Label-Dtm-Home-Modeltype" className="atp-modal-lbl">
+          Model Type
+      <InfoOutlinedIcon
+  titleAccess="Multiple selections permitted in Supervisory Org & Location simultaneously"
+  className="atp-modal-info"
+  fontSize="small"
+/>
+        </div>
+        <div className="atp-createmodel-radios">
+          <fieldset>
+            <legend className="sr-only">Model Type</legend>
+            <label htmlFor="modelTypeSeparate" className="custom_layout">
+              <input
+                id="modelTypeSeparate"
+                type="radio"
+                value="S"
+                name="modelType"
+                required
+                checked={model.selected_type === 'S'}
+                disabled={isModelTypeDisabled}
+                onChange={() => {
+                  setModel({ ...model, selected_type: 'S' });
+                  setIsManuallySelectedCombined(false);
+                }}
+              />
+              <span className="checkmark" /> Separate
+            </label>
+            <label htmlFor="modelTypeCombined" className="custom_layout">
+              <input
+                id="modelTypeCombined"
+                type="radio"
+                value="C"
+                name="modelType"
+                required
+                checked={model.selected_type === 'C'}
+                disabled={isModelTypeDisabled}
+                onChange={() => {
+                  setModel({ ...model, selected_type: 'C' });
+                  setIsManuallySelectedCombined(true);
+                }}
+              />
+              <span className="checkmark" /> Combined
+            </label>
+          </fieldset>
+        </div>
+        {/* Lock Quarter (if feature enabled) */}
         {features.jul22ModelToScenario && (
           <Box mb={2}>
             <Typography variant="subtitle2" component="div" gutterBottom>
